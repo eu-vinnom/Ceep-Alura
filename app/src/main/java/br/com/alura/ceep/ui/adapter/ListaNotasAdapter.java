@@ -43,6 +43,10 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.Li
 		return notas.size();
 	}
 
+	public List<Nota> getNotas(){
+		return notas;
+	}
+
 	class ListaNotasViewHolder extends RecyclerView.ViewHolder{
 
 		ListaNotasViewHolder(@NonNull View itemView){
