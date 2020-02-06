@@ -30,7 +30,7 @@ public class ListaNotasActivity extends AppCompatActivity{
 	}
 
 	private void defineExemplos(NotaDAO dao){
-		for(int i = 0; i < 10000; i++){
+		for(int i = 0; i < 2; i++){
 			dao.insere(new Nota("titulo: " + i, "descrição: " + i));
 		}
 	}
