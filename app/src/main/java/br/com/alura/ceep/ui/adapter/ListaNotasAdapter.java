@@ -18,9 +18,10 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.Li
 
 	private final List<Nota> notas;
 	private final Context contexto;
+	private final NotaDAO dao;
 
 	public ListaNotasAdapter(Context contexto){
-		NotaDAO dao = new NotaDAO();
+		this.dao = new NotaDAO();
 		this.contexto = contexto;
 		this.notas = dao.todos();
 	}
@@ -29,7 +30,6 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.Li
 	@Override
 	public ListaNotasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
 		View item = LayoutInflater.from(contexto).inflate(R.layout.item_nota, parent, false);
-
 		return new ListaNotasViewHolder(item);
 	}
 
@@ -43,8 +43,10 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.Li
 		return notas.size();
 	}
 
-	public List<Nota> getNotas(){
-		return notas;
+	public void adiciona(Nota nota){
+		notas.add(nota);
+		dao.insere(nota);
+		notifyDataSetChanged();
 	}
 
 	class ListaNotasViewHolder extends RecyclerView.ViewHolder{
