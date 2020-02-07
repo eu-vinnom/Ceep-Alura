@@ -31,7 +31,7 @@ public class ListaNotasActivity extends AppCompatActivity{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
 		if(novaNotaExiste(requestCode, resultCode, data)){
-			Nota nota = data.getParcelableExtra(CHAVE_NOTA);
+			@SuppressWarnings("ConstantConditions") Nota nota = data.getParcelableExtra(CHAVE_NOTA);
 			adapter.adiciona(nota);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
@@ -63,6 +63,7 @@ public class ListaNotasActivity extends AppCompatActivity{
 		return codigoNotaNovaEh(requestCode) && codigoNotaCriadaEh(resultCode) && temExtra(data);
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	private boolean temExtra(@Nullable Intent data){
 		return data.hasExtra(CHAVE_NOTA);
 	}

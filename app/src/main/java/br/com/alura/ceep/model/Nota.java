@@ -24,7 +24,8 @@ public class Nota implements Parcelable{
 		this.descricao = descricao;
 	}
 
-	protected Nota(Parcel in){
+
+	private Nota(Parcel in){
 		titulo = in.readString();
 		descricao = in.readString();
 	}
