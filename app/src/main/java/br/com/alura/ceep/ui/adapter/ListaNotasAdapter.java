@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.dao.NotaDAO;
 import br.com.alura.ceep.model.Nota;
+import br.com.alura.ceep.ui.listener.NotasClickListener;
 
-public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.ListaNotasViewHolder>{
+public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.NotasViewHolder>{
 
 	private final List<Nota> notas;
 	private final Context contexto;
 	private final NotaDAO dao;
+	private NotasClickListener onItemClickListener;
 
 	public ListaNotasAdapter(Context contexto){
 		this.dao = new NotaDAO();
@@ -28,14 +30,14 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.Li
 
 	@NonNull
 	@Override
-	public ListaNotasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
+	public NotasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
 		View item = LayoutInflater.from(contexto).inflate(R.layout.item_nota, parent, false);
-		return new ListaNotasViewHolder(item);
+		return new NotasViewHolder(item);
 	}
 
 	@Override
-	public void onBindViewHolder(@NonNull ListaNotasViewHolder holder, int posicao){
-		holder.vincula(holder.itemView, posicao);
+	public void onBindViewHolder(@NonNull NotasViewHolder holder, int posicao){
+		holder.vincula(notas.get(posicao));
 	}
 
 	@Override
@@ -49,25 +51,46 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.Li
 		notifyDataSetChanged();
 	}
 
-	class ListaNotasViewHolder extends RecyclerView.ViewHolder{
+	public void setOnItemClickListener(NotasClickListener onItemClickListener){
+		this.onItemClickListener = onItemClickListener;
+	}
 
-		ListaNotasViewHolder(@NonNull View itemView){
+	class NotasViewHolder extends RecyclerView.ViewHolder{
+
+		private Nota nota;
+		private final TextView campoDescricao;
+		private final TextView campoTitulo;
+
+		NotasViewHolder(@NonNull final View itemView){
 			super(itemView);
+
+			campoDescricao = itemView.findViewById(R.id.item_notas_descricao);
+			campoTitulo = itemView.findViewById(R.id.item_notas_titulo);
+
+			itemView.setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View view){
+					onItemClickListener.onItemCLick(nota, getAdapterPosition());
+				}
+			});
 		}
 
-		void vincula(View view, int posicao){
-			defineTitulo(view, posicao);
-			defineDescricao(view, posicao);
+		void vincula(Nota nota){
+			this.nota = nota;
+			defineCampos(nota);
 		}
 
-		private void defineDescricao(View view, int posicao){
-			final TextView campoDescricao = view.findViewById(R.id.item_notas_descricao);
-			campoDescricao.setText(notas.get(posicao).getDescricao());
+		private void defineCampos(Nota nota){
+			defineTitulo(nota);
+			defineDescricao(nota);
 		}
 
-		private void defineTitulo(View view, int posicao){
-			final TextView campoTitulo = view.findViewById(R.id.item_notas_titulo);
-			campoTitulo.setText(notas.get(posicao).getTitulo());
+		private void defineDescricao(Nota nota){
+			campoDescricao.setText(nota.getDescricao());
+		}
+
+		private void defineTitulo(Nota nota){
+			campoTitulo.setText(nota.getTitulo());
 		}
 	}
 }
