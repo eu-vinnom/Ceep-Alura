@@ -22,9 +22,9 @@ import static br.com.alura.ceep.ui.activity.Constantes.CODIGO_NOTA_INSERIDA;
 
 public class ListaNotasActivity extends AppCompatActivity{
 
-	public static final String APPBAR = "Notas";
-	public static final String POSICAO = "posicao";
-	public static final int POSICAO_PADRAO = -1;
+	private static final String APPBAR = "Notas";
+	private static final String POSICAO = "posicao";
+	private static final int POSICAO_PADRAO = -1;
 	private ListaNotasAdapter adapter;
 
 	@Override

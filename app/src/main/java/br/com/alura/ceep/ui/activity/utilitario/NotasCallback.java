@@ -7,7 +7,7 @@ import br.com.alura.ceep.ui.activity.adapter.ListaNotasAdapter;
 
 public class NotasCallback extends ItemTouchHelper.Callback{
 
-	private ListaNotasAdapter adapter;
+	private final ListaNotasAdapter adapter;
 
 	public NotasCallback(ListaNotasAdapter adapter){
 		this.adapter = adapter;

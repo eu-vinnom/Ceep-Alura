@@ -15,8 +15,8 @@ import static br.com.alura.ceep.ui.activity.Constantes.CHAVE_NOTA;
 
 public class FormularioNotaActivity extends AppCompatActivity{
 
-	public static final String APPBAR_EDITA = "Altera nota";
-	public static final String APPBAR_INSERE = "Insere nota";
+	private static final String APPBAR_EDITA = "Altera nota";
+	private static final String APPBAR_INSERE = "Insere nota";
 	private EditText campoTitulo;
 	private EditText campoDescricao;
 	private Intent dadosNota;
