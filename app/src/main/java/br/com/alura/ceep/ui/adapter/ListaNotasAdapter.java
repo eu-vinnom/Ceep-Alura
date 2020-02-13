@@ -1,6 +1,7 @@
 package br.com.alura.ceep.ui.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,12 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 		dao.altera(posicao, nota);
 		notas.set(posicao, nota);
 		notifyItemChanged(posicao);
+	}
+
+	public void remove(int posicao){
+		dao.remove(posicao);
+		notas.remove(posicao);
+		notifyItemRemoved(posicao);
 	}
 
 	public void setOnItemClickListener(NotasClickListener onItemClickListener){

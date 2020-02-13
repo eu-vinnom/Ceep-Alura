@@ -8,11 +8,13 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.model.Nota;
 import br.com.alura.ceep.ui.adapter.ListaNotasAdapter;
 import br.com.alura.ceep.ui.listener.NotasClickListener;
+import br.com.alura.ceep.ui.utilitario.NotasCallback;
 
 import static br.com.alura.ceep.ui.activity.Constantes.CHAVE_NOTA;
 import static br.com.alura.ceep.ui.activity.Constantes.CODIGO_NOTA_EDITADA;
@@ -53,6 +55,10 @@ public class ListaNotasActivity extends AppCompatActivity{
 		RecyclerView listaNotas = findViewById(R.id.lista_notas_lista);
 		adapter = new ListaNotasAdapter(this);
 		listaNotas.setAdapter(adapter);
+
+		ItemTouchHelper touchHelper = new ItemTouchHelper(new NotasCallback(adapter));
+		touchHelper.attachToRecyclerView(listaNotas);
+
 		adapter.setOnItemClickListener(new NotasClickListener(){
 			@Override
 			public void onItemCLick(Nota nota, int posicao){
