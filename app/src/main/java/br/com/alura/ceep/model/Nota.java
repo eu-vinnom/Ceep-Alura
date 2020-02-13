@@ -49,7 +49,7 @@ public class Nota implements Parcelable{
 		parcel.writeString(descricao);
 	}
 
-	public boolean existe(){
+	public boolean valida(){
 		return !preenchimentoInvalido();
 	}
 

@@ -46,9 +46,15 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 	}
 
 	public void adiciona(Nota nota){
-		notas.add(nota);
 		dao.insere(nota);
+		notas.add(nota);
 		notifyDataSetChanged();
+	}
+
+	public void edita(Nota nota, int posicao){
+		dao.altera(posicao, nota);
+		notas.set(posicao, nota);
+		notifyItemChanged(posicao);
 	}
 
 	public void setOnItemClickListener(NotasClickListener onItemClickListener){
@@ -57,9 +63,9 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 
 	class NotasViewHolder extends RecyclerView.ViewHolder{
 
-		private Nota nota;
 		private final TextView campoDescricao;
 		private final TextView campoTitulo;
+		private Nota nota;
 
 		NotasViewHolder(@NonNull final View itemView){
 			super(itemView);

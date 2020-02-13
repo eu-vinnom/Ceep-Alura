@@ -1,5 +1,6 @@
 package br.com.alura.ceep.ui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,14 +12,30 @@ import br.com.alura.ceep.R;
 import br.com.alura.ceep.model.Nota;
 
 import static br.com.alura.ceep.ui.activity.Constantes.CHAVE_NOTA;
-import static br.com.alura.ceep.ui.activity.Constantes.CODIGO_NOTA_CRIADA;
 
 public class FormularioNotaActivity extends AppCompatActivity{
+
+	private EditText campoTitulo;
+	private EditText campoDescricao;
+	private Intent dadosNota;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_formulario_nota);
+
+		campoTitulo = findViewById(R.id.formulario_nota_titulo);
+		campoDescricao = findViewById(R.id.formulario_nota_descricao);
+
+		dadosNota = getIntent();
+		if(dadosNota.hasExtra(CHAVE_NOTA)){
+			setTitle("Altera nota");
+			Nota nota = dadosNota.getParcelableExtra(CHAVE_NOTA);
+			campoTitulo.setText(nota.getTitulo());
+			campoDescricao.setText(nota.getDescricao());
+		} else{
+			setTitle("Insere nota");
+		}
 	}
 
 	@Override
@@ -30,39 +47,33 @@ public class FormularioNotaActivity extends AppCompatActivity{
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		if(menuSalvaNotaIgualAo(item)){
-			String titulo = atribuiTitulo();
-			String descricao = atribuiDescricao();
-
-			Nota nota = new Nota(titulo, descricao);
-			if(nota.existe()){
-				envia(nota);
-				finish();
+			Nota nota = new Nota(atribuiTitulo(), atribuiDescricao());
+			if(nota.valida()){
+				if(dadosNota.hasExtra(CHAVE_NOTA)){
+					dadosNota.putExtra(CHAVE_NOTA, nota);
+					setResult(Activity.RESULT_OK, dadosNota);
+					finish();
+				} else{
+					dadosNota = new Intent();
+					dadosNota.putExtra(CHAVE_NOTA, nota);
+					setResult(Activity.RESULT_OK, dadosNota);
+					finish();
+				}
 			}
+
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void envia(Nota nota){
-		Intent dadosNota = defineDados(nota);
-		setResult(CODIGO_NOTA_CRIADA, dadosNota);
-	}
-
-	private Intent defineDados(Nota nota){
-		Intent dadosNota = new Intent();
-		dadosNota.putExtra(CHAVE_NOTA, nota);
-		return dadosNota;
-	}
-
-	private String atribuiDescricao(){
-		EditText campoDescricao = findViewById(R.id.formulario_nota_descricao);
-		return campoDescricao.getText().toString();
-	}
-
 	private String atribuiTitulo(){
-		EditText campoTitulo = findViewById(R.id.formulario_nota_titulo);
 		return campoTitulo.getText().toString();
 	}
 
+	private String atribuiDescricao(){
+		return campoDescricao.getText().toString();
+	}
+
+	//
 	private boolean menuSalvaNotaIgualAo(MenuItem item){
 		return item.getItemId() == R.id.formulario_menu_salva_nota;
 	}

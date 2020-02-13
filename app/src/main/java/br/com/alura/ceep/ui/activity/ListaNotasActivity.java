@@ -1,10 +1,10 @@
 package br.com.alura.ceep.ui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +15,8 @@ import br.com.alura.ceep.ui.adapter.ListaNotasAdapter;
 import br.com.alura.ceep.ui.listener.NotasClickListener;
 
 import static br.com.alura.ceep.ui.activity.Constantes.CHAVE_NOTA;
-import static br.com.alura.ceep.ui.activity.Constantes.CODIGO_NOTA_CRIADA;
-import static br.com.alura.ceep.ui.activity.Constantes.CODIGO_NOTA_NOVA;
+import static br.com.alura.ceep.ui.activity.Constantes.CODIGO_NOTA_EDITADA;
+import static br.com.alura.ceep.ui.activity.Constantes.CODIGO_NOTA_INSERIDA;
 
 public class ListaNotasActivity extends AppCompatActivity{
 
@@ -26,15 +26,20 @@ public class ListaNotasActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lista_notas);
+		setTitle("Notas");
 
 		criaTela();
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
-		if(novaNotaExiste(requestCode, resultCode, data)){
+		if(notaInserida(requestCode, resultCode, data)){
 			@SuppressWarnings("ConstantConditions") Nota nota = data.getParcelableExtra(CHAVE_NOTA);
 			adapter.adiciona(nota);
+		} else if(notaEditada(requestCode, resultCode, data)){
+			@SuppressWarnings("ConstantConditions") Nota nota = data.getParcelableExtra(CHAVE_NOTA);
+			int posicao = data.getIntExtra("posicao", -1);
+			adapter.edita(nota, posicao);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -51,7 +56,11 @@ public class ListaNotasActivity extends AppCompatActivity{
 		adapter.setOnItemClickListener(new NotasClickListener(){
 			@Override
 			public void onItemCLick(Nota nota, int posicao){
-				Toast.makeText(ListaNotasActivity.this, nota.getTitulo(), Toast.LENGTH_SHORT).show();
+				Intent daListaProFormularioEdita =
+					new Intent(ListaNotasActivity.this, FormularioNotaActivity.class);
+				daListaProFormularioEdita.putExtra(CHAVE_NOTA, nota);
+				daListaProFormularioEdita.putExtra("posicao", posicao);
+				startActivityForResult(daListaProFormularioEdita, 2);
 			}
 		});
 	}
@@ -63,25 +72,33 @@ public class ListaNotasActivity extends AppCompatActivity{
 			public void onClick(View view){
 				Intent daListaProFormularioInsere =
 					new Intent(ListaNotasActivity.this, FormularioNotaActivity.class);
-				startActivityForResult(daListaProFormularioInsere, CODIGO_NOTA_NOVA);
+				startActivityForResult(daListaProFormularioInsere, CODIGO_NOTA_INSERIDA);
 			}
 		});
 	}
 
-	private boolean novaNotaExiste(int requestCode, int resultCode, @Nullable Intent data){
-		return codigoNotaNovaEh(requestCode) && codigoNotaCriadaEh(resultCode) && existe(data);
+	private boolean notaInserida(int requestCode, int resultCode, @Nullable Intent data){
+		return codigoNotaNovaEh(requestCode) && codigoNotaInseridaEh(resultCode) && existe(data);
+	}
+
+	private boolean notaEditada(int requestCode, int resultCode, @Nullable Intent data){
+		return codigoNotaEditadaEh(requestCode) && codigoNotaInseridaEh(resultCode) && existe(data);
+	}
+
+	private boolean codigoNotaNovaEh(int requestCode){
+		return requestCode == CODIGO_NOTA_INSERIDA;
+	}
+
+	private boolean codigoNotaEditadaEh(int requestCode){
+		return requestCode == CODIGO_NOTA_EDITADA;
+	}
+
+	private boolean codigoNotaInseridaEh(int resultCode){
+		return resultCode == Activity.RESULT_OK;
 	}
 
 	@SuppressWarnings("ConstantConditions")
 	private boolean existe(@Nullable Intent data){
 		return data.hasExtra(CHAVE_NOTA) && data != null;
-	}
-
-	private boolean codigoNotaCriadaEh(int resultCode){
-		return resultCode == CODIGO_NOTA_CRIADA;
-	}
-
-	private boolean codigoNotaNovaEh(int requestCode){
-		return requestCode == CODIGO_NOTA_NOVA;
 	}
 }
