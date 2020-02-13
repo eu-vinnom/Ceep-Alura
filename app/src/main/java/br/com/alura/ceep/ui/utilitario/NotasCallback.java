@@ -1,7 +1,5 @@
 package br.com.alura.ceep.ui.utilitario;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,16 +15,21 @@ public class NotasCallback extends ItemTouchHelper.Callback{
 
 	@Override
 	public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder){
+		int sinalizacaoArraste = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
+		int sinalizacaoDeslize = ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
 
-		int sinalizacaoDeslize = ItemTouchHelper. RIGHT | ItemTouchHelper.LEFT;
-
-		return makeMovementFlags(0, sinalizacaoDeslize);
+		return makeMovementFlags(sinalizacaoArraste, sinalizacaoDeslize);
 	}
 
 	@Override
-	public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
-												@NonNull RecyclerView.ViewHolder target){
-		return false;
+	public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder holderInicial,
+												@NonNull RecyclerView.ViewHolder holderFinal){
+		int posicaoInicial = holderInicial.getAdapterPosition();
+		int posicaoFinal = holderFinal.getAdapterPosition();
+
+		adapter.troca(posicaoInicial, posicaoFinal);
+
+		return true;
 	}
 
 	@Override

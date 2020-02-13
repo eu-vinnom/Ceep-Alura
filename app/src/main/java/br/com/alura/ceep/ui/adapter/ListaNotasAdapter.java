@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -62,6 +63,12 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 		dao.remove(posicao);
 		notas.remove(posicao);
 		notifyItemRemoved(posicao);
+	}
+
+	public void troca(int posicaoInicial, int posicaoFinal){
+		dao.troca(posicaoInicial, posicaoFinal);
+		Collections.swap(notas, posicaoInicial, posicaoFinal);
+		notifyItemMoved(posicaoInicial, posicaoFinal);
 	}
 
 	public void setOnItemClickListener(NotasClickListener onItemClickListener){
