@@ -15,6 +15,8 @@ import static br.com.alura.ceep.ui.activity.Constantes.CHAVE_NOTA;
 
 public class FormularioNotaActivity extends AppCompatActivity{
 
+	public static final String APPBAR_EDITA = "Altera nota";
+	public static final String APPBAR_INSERE = "Insere nota";
 	private EditText campoTitulo;
 	private EditText campoDescricao;
 	private Intent dadosNota;
@@ -24,17 +26,14 @@ public class FormularioNotaActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_formulario_nota);
 
-		campoTitulo = findViewById(R.id.formulario_nota_titulo);
-		campoDescricao = findViewById(R.id.formulario_nota_descricao);
+		defineCampos();
 
 		dadosNota = getIntent();
-		if(dadosNota.hasExtra(CHAVE_NOTA)){
-			setTitle("Altera nota");
-			Nota nota = dadosNota.getParcelableExtra(CHAVE_NOTA);
-			campoTitulo.setText(nota.getTitulo());
-			campoDescricao.setText(nota.getDescricao());
+		if(notaRecuperada()){
+			setTitle(APPBAR_EDITA);
+			recuperaNota();
 		} else{
-			setTitle("Insere nota");
+			setTitle(APPBAR_INSERE);
 		}
 	}
 
@@ -45,36 +44,64 @@ public class FormularioNotaActivity extends AppCompatActivity{
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item){
-		if(menuSalvaNotaIgualAo(item)){
-			Nota nota = new Nota(atribuiTitulo(), atribuiDescricao());
-			if(nota.valida()){
-				if(dadosNota.hasExtra(CHAVE_NOTA)){
-					dadosNota.putExtra(CHAVE_NOTA, nota);
-					setResult(Activity.RESULT_OK, dadosNota);
-					finish();
-				} else{
-					dadosNota = new Intent();
-					dadosNota.putExtra(CHAVE_NOTA, nota);
-					setResult(Activity.RESULT_OK, dadosNota);
-					finish();
-				}
-			}
-
+	public boolean onOptionsItemSelected(MenuItem itemClicado){
+		if(menuSalvaNotaIgualAo(itemClicado)){
+			Nota nota = new Nota(obtemTitulo(), obtemDescricao());
+			finalizaFormulario(nota);
 		}
-		return super.onOptionsItemSelected(item);
+		return super.onOptionsItemSelected(itemClicado);
 	}
 
-	private String atribuiTitulo(){
+	private boolean menuSalvaNotaIgualAo(MenuItem item){
+		return item.getItemId() == R.id.formulario_menu_salva_nota;
+	}
+
+	private String obtemTitulo(){
 		return campoTitulo.getText().toString();
 	}
 
-	private String atribuiDescricao(){
+	private String obtemDescricao(){
 		return campoDescricao.getText().toString();
 	}
 
-	//
-	private boolean menuSalvaNotaIgualAo(MenuItem item){
-		return item.getItemId() == R.id.formulario_menu_salva_nota;
+	private void defineCampos(){
+		campoTitulo = findViewById(R.id.formulario_nota_titulo);
+		campoDescricao = findViewById(R.id.formulario_nota_descricao);
+	}
+
+	private void recuperaNota(){
+		Nota nota = dadosNota.getParcelableExtra(CHAVE_NOTA);
+		defineTitulo(nota.getTitulo());
+		defineDescricao(nota.getDescricao());
+	}
+
+	private void defineTitulo(String titulo){
+		campoTitulo.setText(titulo);
+	}
+
+	private void defineDescricao(String descricao){
+		campoDescricao.setText(descricao);
+	}
+
+	private void finalizaFormulario(Nota nota){
+		if(nota.valida()){
+			if(notaRecuperada()){
+				envia(nota);
+				finish();
+			} else{
+				dadosNota = new Intent();
+				envia(nota);
+				finish();
+			}
+		}
+	}
+
+	private boolean notaRecuperada(){
+		return dadosNota.hasExtra(CHAVE_NOTA);
+	}
+
+	private void envia(Nota nota){
+		dadosNota.putExtra(CHAVE_NOTA, nota);
+		setResult(Activity.RESULT_OK, dadosNota);
 	}
 }

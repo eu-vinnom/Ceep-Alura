@@ -1,7 +1,6 @@
-package br.com.alura.ceep.ui.adapter;
+package br.com.alura.ceep.ui.activity.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.dao.NotaDAO;
 import br.com.alura.ceep.model.Nota;
-import br.com.alura.ceep.ui.listener.NotasClickListener;
+import br.com.alura.ceep.ui.activity.listener.NotasClickListener;
 
 public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.NotasViewHolder>{
 
@@ -87,6 +86,10 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 			campoDescricao = itemView.findViewById(R.id.item_notas_descricao);
 			campoTitulo = itemView.findViewById(R.id.item_notas_titulo);
 
+			configuraListenerLista(itemView);
+		}
+
+		private void configuraListenerLista(@NonNull View itemView){
 			itemView.setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View view){

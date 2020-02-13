@@ -1,9 +1,9 @@
-package br.com.alura.ceep.ui.utilitario;
+package br.com.alura.ceep.ui.activity.utilitario;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import br.com.alura.ceep.ui.adapter.ListaNotasAdapter;
+import br.com.alura.ceep.ui.activity.adapter.ListaNotasAdapter;
 
 public class NotasCallback extends ItemTouchHelper.Callback{
 
@@ -15,10 +15,18 @@ public class NotasCallback extends ItemTouchHelper.Callback{
 
 	@Override
 	public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder){
-		int sinalizacaoArraste = ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
-		int sinalizacaoDeslize = ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
+		int sinalizacaoArraste = defineSinalizacaoArraste();
+		int sinalizacaoDeslize = defineSinalizacaoDeslize();
 
 		return makeMovementFlags(sinalizacaoArraste, sinalizacaoDeslize);
+	}
+
+	private int defineSinalizacaoArraste(){
+		return ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
+	}
+
+	private int defineSinalizacaoDeslize(){
+		return ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
 	}
 
 	@Override
