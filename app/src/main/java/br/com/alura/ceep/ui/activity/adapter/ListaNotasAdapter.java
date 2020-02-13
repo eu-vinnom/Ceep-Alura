@@ -90,12 +90,7 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 		}
 
 		private void configuraListenerLista(@NonNull View itemView){
-			itemView.setOnClickListener(new View.OnClickListener(){
-				@Override
-				public void onClick(View view){
-					onItemClickListener.onItemCLick(nota, getAdapterPosition());
-				}
-			});
+			itemView.setOnClickListener(view -> onItemClickListener.onItemCLick(nota, getAdapterPosition()));
 		}
 
 		void vincula(Nota nota){

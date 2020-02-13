@@ -3,7 +3,6 @@ package br.com.alura.ceep.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.model.Nota;
 import br.com.alura.ceep.ui.activity.adapter.ListaNotasAdapter;
-import br.com.alura.ceep.ui.activity.listener.NotasClickListener;
 import br.com.alura.ceep.ui.activity.utilitario.NotasCallback;
 
 import static br.com.alura.ceep.ui.activity.Constantes.CHAVE_NOTA;
@@ -74,12 +72,7 @@ public class ListaNotasActivity extends AppCompatActivity{
 
 	private void defineInsereNota(){
 		TextView novaNota = findViewById(R.id.lista_notas_insere_nota);
-		novaNota.setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View view){
-				daListaProFormularioInsereNota();
-			}
-		});
+		novaNota.setOnClickListener(view -> daListaProFormularioInsereNota());
 	}
 
 	private void daListaProFormularioInsereNota(){
@@ -88,12 +81,7 @@ public class ListaNotasActivity extends AppCompatActivity{
 	}
 
 	private void defineEditaNota(){
-		adapter.setOnItemClickListener(new NotasClickListener(){
-			@Override
-			public void onItemCLick(Nota nota, int posicao){
-				daListaProFormularioEditaNota(nota, posicao);
-			}
-		});
+		adapter.setOnItemClickListener(this::daListaProFormularioEditaNota);
 	}
 
 	private void daListaProFormularioEditaNota(Nota nota, int posicao){
