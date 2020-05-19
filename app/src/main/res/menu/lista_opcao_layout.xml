@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/home_layout_lista"
+        android:icon="@drawable/ic_altera_layout_lista"
+        android:title="@string/layout_lista"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/home_layout_grade"
+        android:icon="@drawable/ic_altera_layout_grade"
+        android:title="@string/layout_grade"
+        app:showAsAction="ifRoom" />
+</menu>
