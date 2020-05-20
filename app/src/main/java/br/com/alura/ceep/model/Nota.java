@@ -16,25 +16,44 @@ public class Nota implements Parcelable {
 			return new Nota[size];
 		}
 	};
-	private final String titulo;
-	private final String descricao;
 
-	public Nota(String titulo, String descricao) {
-		this.titulo = titulo;
-		this.descricao = descricao;
-	}
+	private static final String BRANCO = "#FFFFFF";
+	private String titulo;
+	private String descricao;
+	private String cor;
 
 	private Nota(Parcel in) {
 		titulo = in.readString();
 		descricao = in.readString();
+		cor = in.readString();
+	}
+
+	public Nota() {
+		this.cor = BRANCO;
 	}
 
 	public String getTitulo() {
 		return titulo;
 	}
 
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
+	}
+
 	public String getDescricao() {
 		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public String getCor() {
+		return cor;
+	}
+
+	public void setCor(String cor) {
+		this.cor = cor;
 	}
 
 	@Override
@@ -46,6 +65,7 @@ public class Nota implements Parcelable {
 	public void writeToParcel(Parcel parcel, int i) {
 		parcel.writeString(titulo);
 		parcel.writeString(descricao);
+		parcel.writeString(cor);
 	}
 
 	public boolean valida() {

@@ -1,6 +1,7 @@
 package br.com.alura.ceep.ui.activity.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import java.util.List;
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.dao.NotaDAO;
 import br.com.alura.ceep.model.Nota;
-import br.com.alura.ceep.ui.activity.listener.NotasClickListener;
 
 public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.NotasViewHolder> {
 
@@ -39,7 +39,7 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 
 	@Override
 	public void onBindViewHolder(@NonNull NotasViewHolder holder, int posicao) {
-		holder.vincula(notas.get(posicao));
+		holder.vincula(notas.get(posicao), holder.itemView);
 	}
 
 	@Override
@@ -75,6 +75,10 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 		this.onItemClickListener = onItemClickListener;
 	}
 
+	public interface NotasClickListener {
+		void onItemCLick(Nota nota, int posicao);
+	}
+
 	class NotasViewHolder extends RecyclerView.ViewHolder {
 
 		private final TextView campoDescricao;
@@ -83,10 +87,8 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 
 		NotasViewHolder(@NonNull final View itemView) {
 			super(itemView);
-
 			campoDescricao = itemView.findViewById(R.id.item_notas_descricao);
 			campoTitulo = itemView.findViewById(R.id.item_notas_titulo);
-
 			configuraListenerLista(itemView);
 		}
 
@@ -94,8 +96,9 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 			itemView.setOnClickListener(view -> onItemClickListener.onItemCLick(nota, getAdapterPosition()));
 		}
 
-		void vincula(Nota nota) {
+		void vincula(Nota nota, View itemView) {
 			this.nota = nota;
+			itemView.setBackgroundColor(Color.parseColor(nota.getCor()));
 			defineCampos(nota);
 		}
 

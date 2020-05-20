@@ -2,15 +2,19 @@ package br.com.alura.ceep.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import br.com.alura.ceep.R;
 import br.com.alura.ceep.model.Nota;
+import br.com.alura.ceep.ui.activity.adapter.PaletaCoresAdapter;
 
 import static br.com.alura.ceep.ui.activity.Constantes.CHAVE_NOTA;
 
@@ -21,13 +25,17 @@ public class FormularioNotaActivity extends AppCompatActivity {
 	private EditText campoTitulo;
 	private EditText campoDescricao;
 	private Intent dadosNota;
+	private ConstraintLayout formularioTela;
+	private Nota nota;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_formulario_nota);
 
-		defineCampos();
+		defineViewPeloId();
+
+		criaNotaSeNula();
 
 		dadosNota = getIntent();
 		if(notaRecuperada()) {
@@ -35,6 +43,23 @@ public class FormularioNotaActivity extends AppCompatActivity {
 			recuperaNota();
 		} else {
 			setTitle(APPBAR_INSERE);
+		}
+
+		defineBarraCores();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putParcelable(CHAVE_NOTA, nota);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		nota = savedInstanceState.getParcelable(CHAVE_NOTA);
+		if(nota != null) {
+			formularioTela.setBackgroundColor(Color.parseColor(nota.getCor()));
 		}
 	}
 
@@ -47,10 +72,33 @@ public class FormularioNotaActivity extends AppCompatActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem itemClicado) {
 		if(menuSalvaNotaIgualAo(itemClicado)) {
-			Nota nota = new Nota(obtemTitulo(), obtemDescricao());
+			defineNota();
 			finalizaFormulario(nota);
 		}
 		return super.onOptionsItemSelected(itemClicado);
+	}
+
+	private void defineNota() {
+		nota.setTitulo(obtemTitulo());
+		nota.setDescricao(obtemDescricao());
+	}
+
+	private void criaNotaSeNula() {
+		if(nota == null) {
+			nota = new Nota();
+		}
+	}
+
+	private void defineBarraCores() {
+		RecyclerView listaCores = findViewById(R.id.formulario_lista_cores);
+		PaletaCoresAdapter adapter = new PaletaCoresAdapter(this);
+		listaCores.setAdapter(adapter);
+		adapter.setOnCorClickListener(this::alteraCorFundo);
+	}
+
+	private void alteraCorFundo(String cor) {
+		formularioTela.setBackgroundColor(Color.parseColor(cor));
+		nota.setCor(cor);
 	}
 
 	private boolean menuSalvaNotaIgualAo(MenuItem item) {
@@ -65,15 +113,17 @@ public class FormularioNotaActivity extends AppCompatActivity {
 		return campoDescricao.getText().toString();
 	}
 
-	private void defineCampos() {
+	private void defineViewPeloId() {
 		campoTitulo = findViewById(R.id.formulario_nota_titulo);
 		campoDescricao = findViewById(R.id.formulario_nota_descricao);
+		formularioTela = findViewById(R.id.formulario_tela);
 	}
 
 	private void recuperaNota() {
-		Nota nota = dadosNota.getParcelableExtra(CHAVE_NOTA);
+		nota = dadosNota.getParcelableExtra(CHAVE_NOTA);
 		defineTitulo(nota.getTitulo());
 		defineDescricao(nota.getDescricao());
+		formularioTela.setBackgroundColor(Color.parseColor(nota.getCor()));
 	}
 
 	private void defineTitulo(String titulo) {
@@ -88,12 +138,11 @@ public class FormularioNotaActivity extends AppCompatActivity {
 		if(nota.valida()) {
 			if(notaRecuperada()) {
 				envia(nota);
-				finish();
 			} else {
 				dadosNota = new Intent();
 				envia(nota);
-				finish();
 			}
+			finish();
 		}
 	}
 
