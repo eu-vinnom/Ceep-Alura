@@ -7,4 +7,5 @@
     <string name="layout_lista">Lista</string>
     <string name="layout_grade">Grade</string>
     <string name="botao_troca_cor">Botão para trocar cor</string>
+    <string name="tela_apresentacao">Tela de apresentação</string>
 </resources>
