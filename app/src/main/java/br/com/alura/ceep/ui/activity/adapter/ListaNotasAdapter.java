@@ -10,12 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import br.com.alura.ceep.R;
-import br.com.alura.ceep.dao.NotaDAO;
+import br.com.alura.ceep.asynctask.BaseAsyncTask;
 import br.com.alura.ceep.model.Nota;
+import br.com.alura.ceep.room.CeepBD;
+import br.com.alura.ceep.room.dao.NotaDAO;
 
 public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.NotasViewHolder> {
 
@@ -25,9 +28,9 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 	private NotasClickListener onItemClickListener;
 
 	public ListaNotasAdapter(Context contexto) {
-		this.dao = new NotaDAO();
+		this.dao = CeepBD.getInstance(contexto).getNotaDao();
 		this.contexto = contexto;
-		this.notas = dao.todos();
+		this.notas = new ArrayList<>();
 	}
 
 	@NonNull
@@ -48,27 +51,123 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 	}
 
 	public void adiciona(Nota nota) {
-		dao.insere(nota);
-		notas.add(nota);
-		notifyDataSetChanged();
+		new BaseAsyncTask<>(
+			() -> insereNotaNaLista(nota),
+			this::insereNotaNoDB,
+			idNotas -> defineId(idNotas[0])).execute();
 	}
 
-	public void edita(Nota nota, int posicao) {
-		dao.altera(posicao, nota);
-		notas.set(posicao, nota);
-		notifyItemChanged(posicao);
+	public void edita(Nota nota) {
+		new BaseAsyncTask<>(
+			getVoidPreparaCallback(),
+			() -> alteraNotaNoDB(nota),
+			resultado -> alteraNotaNaLista(nota)).execute();
 	}
 
 	public void remove(int posicao) {
-		dao.remove(posicao);
-		notas.remove(posicao);
-		notifyItemRemoved(posicao);
+		Nota notaRemovida = notas.get(posicao);
+		new BaseAsyncTask<>(
+			() -> atualizaPosicaoNotasDepoisDaRemovida(posicao),
+			() -> removeNotaNoDB(notaRemovida),
+			resultado -> removeNotaNaLista(posicao, notaRemovida)).execute();
+
 	}
 
 	public void troca(int posicaoInicial, int posicaoFinal) {
-		dao.troca(posicaoInicial, posicaoFinal);
+		new BaseAsyncTask<>(
+			() -> atualizaPosicaoNotasNaLista(posicaoInicial, posicaoFinal),
+			this::atualizaPosicaoNotasNoDB,
+			resultado -> notifyItemMoved(posicaoInicial, posicaoFinal)).execute();
+	}
+
+	public void recuperaNotas() {
+		new BaseAsyncTask<>(
+			getVoidPreparaCallback(),
+			dao::todas,
+			this::regeneraLista).execute();
+	}
+
+	private BaseAsyncTask.PreparaCallback getVoidPreparaCallback() {
+		return () -> {};
+	}
+
+	private void insereNotaNaLista(Nota nota) {
+		notas.add(0, nota);
+
+		for(Nota existente : notas) {
+			existente.setPosicao(notas.indexOf(existente));
+		}
+	}
+
+	private long[] insereNotaNoDB() {
+		return dao.insere(notas.toArray(new Nota[0]));
+	}
+
+	private void defineId(long idNota) {
+		notas.get(0).setId(idNota);
+		notifyDataSetChanged();
+	}
+
+	private Void alteraNotaNoDB(Nota nota) {
+		return dao.altera(nota);
+	}
+
+	private void alteraNotaNaLista(Nota nota) {
+		notas.set(nota.getPosicao(), nota);
+		notifyItemChanged(nota.getPosicao());
+	}
+
+	private void atualizaPosicaoNotasDepoisDaRemovida(int posicao) {
+		if(posicao < notas.size() - 1) {
+			for(int i = posicao + 1; i < notas.size(); i++) {
+				notas.get(i).setPosicao(i - 1);
+			}
+		}
+	}
+
+	private Void removeNotaNoDB(Nota notaRemovida) {
+		return dao.remove(notaRemovida);
+	}
+
+	private void removeNotaNaLista(int posicao, Nota notaRemovida) {
+		notas.remove(notaRemovida);
+		notifyItemRemoved(posicao);
+		new BaseAsyncTask<>(
+			getVoidPreparaCallback(),
+			this::atualizaPosicaoNotasNoDB,
+			resultado -> {}).execute();
+	}
+
+	private void atualizaPosicaoNotasNaLista(int posicaoInicial, int posicaoFinal) {
 		Collections.swap(notas, posicaoInicial, posicaoFinal);
-		notifyItemMoved(posicaoInicial, posicaoFinal);
+		redefinePosicaoNotas(posicaoInicial, posicaoFinal);
+	}
+
+	private Void atualizaPosicaoNotasNoDB() {
+		return dao.atualiza(notas.toArray(new Nota[0]));
+	}
+
+	private void redefinePosicaoNotas(int posicaoInicial, int posicaoFinal) {
+		if(posicaoInicial < posicaoFinal) {
+			for(int posicao = posicaoInicial; posicao <= posicaoFinal; posicao++) {
+				atualizaPosicaoNota(posicao);
+			}
+		} else if(posicaoInicial > posicaoFinal) {
+			for(int posicao = posicaoFinal; posicao <= posicaoInicial; posicao++) {
+				atualizaPosicaoNota(posicao);
+			}
+		}
+	}
+
+	private void atualizaPosicaoNota(int i) {
+		Nota nota = notas.get(i);
+		nota.setPosicao(notas.indexOf(nota));
+	}
+
+	private void regeneraLista(List<Nota> notasDoDB) {
+		notas.clear();
+		notas.addAll(notasDoDB);
+		notifyDataSetChanged();
 	}
 
 	public void setOnItemClickListener(NotasClickListener onItemClickListener) {

@@ -3,6 +3,10 @@ package br.com.alura.ceep.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Nota implements Parcelable {
 
 	public static final Creator<Nota> CREATOR = new Creator<Nota>() {
@@ -16,16 +20,20 @@ public class Nota implements Parcelable {
 			return new Nota[size];
 		}
 	};
-
 	private static final String BRANCO = "#FFFFFF";
+	@PrimaryKey(autoGenerate = true)
+	private long id = 0;
 	private String titulo;
 	private String descricao;
 	private String cor;
+	private int posicao;
 
 	private Nota(Parcel in) {
 		titulo = in.readString();
 		descricao = in.readString();
 		cor = in.readString();
+		id = in.readLong();
+		posicao = in.readInt();
 	}
 
 	public Nota() {
@@ -48,6 +56,22 @@ public class Nota implements Parcelable {
 		this.descricao = descricao;
 	}
 
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public int getPosicao() {
+		return posicao;
+	}
+
+	public void setPosicao(int posicao) {
+		this.posicao = posicao;
+	}
+
 	public String getCor() {
 		return cor;
 	}
@@ -66,6 +90,8 @@ public class Nota implements Parcelable {
 		parcel.writeString(titulo);
 		parcel.writeString(descricao);
 		parcel.writeString(cor);
+		parcel.writeLong(id);
+		parcel.writeInt(posicao);
 	}
 
 	public boolean valida() {

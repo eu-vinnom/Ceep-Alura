@@ -34,8 +34,6 @@ import static br.com.alura.ceep.ui.activity.TipoLayout.LISTA;
 public class ListaNotasActivity extends AppCompatActivity {
 
 	private static final String APPBAR = "Notas";
-	private static final String POSICAO = "posicao";
-	private static final int POSICAO_PADRAO = -1;
 	private static final String LAYOUT = "Layout";
 	private static final String ERRO_ALTERACAO_LAYOUT = "Não foi possível alterar o layout";
 	private ListaNotasAdapter adapter;
@@ -63,10 +61,15 @@ public class ListaNotasActivity extends AppCompatActivity {
 				adapter.adiciona(nota);
 			} else if(notaEditada(requestCode, resultCode)) {
 				@SuppressWarnings("ConstantConditions") Nota nota = data.getParcelableExtra(CHAVE_NOTA);
-				int posicao = data.getIntExtra(POSICAO, POSICAO_PADRAO);
-				adapter.edita(nota, posicao);
+				adapter.edita(nota);
 			}
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		adapter.recuperaNotas();
 	}
 
 	@Override
@@ -189,7 +192,6 @@ public class ListaNotasActivity extends AppCompatActivity {
 	private Intent configuraIntentFormularioEditaNota(Nota nota, int posicao) {
 		Intent formularioEditaNota = new Intent(ListaNotasActivity.this, FormularioNotaActivity.class);
 		formularioEditaNota.putExtra(CHAVE_NOTA, nota);
-		formularioEditaNota.putExtra(POSICAO, posicao);
 		return formularioEditaNota;
 	}
 

@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,22 +35,23 @@ public class FormularioNotaActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_formulario_nota);
 
 		defineViewPeloId();
-
 		criaNotaSeNula();
-
 		dadosNota = getIntent();
+		defineInsereOuEdita();
+		defineBarraCores();
+	}
+
+	private void defineInsereOuEdita() {
 		if(notaRecuperada()) {
 			setTitle(APPBAR_EDITA);
 			recuperaNota();
 		} else {
 			setTitle(APPBAR_INSERE);
 		}
-
-		defineBarraCores();
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(CHAVE_NOTA, nota);
 	}
