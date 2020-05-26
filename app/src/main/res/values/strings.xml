@@ -8,4 +8,14 @@
     <string name="layout_grade">Grade</string>
     <string name="botao_troca_cor">Botão para trocar cor</string>
     <string name="tela_apresentacao">Tela de apresentação</string>
+    <string name="deixe_feedback">Deixe seu feedback! :)</string>
+    <string name="banner_feedback">Banner da tela de feedback</string>
+    <string name="email">E-mail</string>
+    <string name="seu_feedback">Escreva seu feedback</string>
+    <string name="orientacao_feedback">
+        Envie dúvidas ou sugestões sobre sua experiência com o Ceep.
+        Usaremos as informações fornecidas para aprimorar a experiência da App.
+    </string>
+    <string name="feedback">Feedback</string>
+    <string name="envia_feedback">Envia feedback</string>
 </resources>

@@ -13,4 +13,10 @@
         android:icon="@drawable/ic_altera_layout_grade"
         android:title="@string/layout_grade"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/home_ajuda_feedback"
+        android:icon="@drawable/ic_ajuda_feedback"
+        android:title="@string/feedback"
+        app:showAsAction="ifRoom" />
 </menu>

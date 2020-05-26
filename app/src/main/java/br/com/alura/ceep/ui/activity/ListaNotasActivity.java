@@ -23,6 +23,7 @@ import br.com.alura.ceep.model.Nota;
 import br.com.alura.ceep.ui.activity.adapter.ListaNotasAdapter;
 import br.com.alura.ceep.ui.activity.utilitario.NotasCallback;
 
+import static br.com.alura.ceep.R.id.home_ajuda_feedback;
 import static br.com.alura.ceep.R.id.home_layout_grade;
 import static br.com.alura.ceep.R.id.home_layout_lista;
 import static br.com.alura.ceep.ui.activity.Constantes.CHAVE_NOTA;
@@ -111,6 +112,7 @@ public class ListaNotasActivity extends AppCompatActivity {
 		} else {
 			menu.findItem(home_layout_grade).setVisible(ehLayoutLista());
 		}
+		menu.findItem(home_ajuda_feedback).setVisible(true);
 	}
 
 	private void alteraLayout(MenuItem item) {
@@ -121,6 +123,9 @@ public class ListaNotasActivity extends AppCompatActivity {
 				break;
 			case home_layout_lista:
 				escolheLayout(editorLayout, home_layout_lista);
+				break;
+			case home_ajuda_feedback:
+				startActivity(new Intent(ListaNotasActivity.this, FeedbackActivity.class));
 				break;
 			default:
 				Toast.makeText(this, ERRO_ALTERACAO_LAYOUT, Toast.LENGTH_SHORT).show();
