@@ -51,6 +51,7 @@ public class ListaNotasActivity extends AppCompatActivity {
 		defineLayoutPadrao();
 
 		criaTela();
+		adapter.recuperaNotas();
 	}
 
 	@Override
@@ -65,12 +66,6 @@ public class ListaNotasActivity extends AppCompatActivity {
 				adapter.edita(nota);
 			}
 		}
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		adapter.recuperaNotas();
 	}
 
 	@Override
